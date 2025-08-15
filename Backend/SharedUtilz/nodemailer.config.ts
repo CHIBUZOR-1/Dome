@@ -1,7 +1,8 @@
-// Backend/sharedUtilz/nodemailer-config.ts
+// Backend/sharedUtilz/nodemailer.config.ts
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
-dotenv.config();
+import path from 'path';
+dotenv.config({ path: path.resolve(process.cwd(), 'UserService/.env') });
 
 
 const transporter = nodemailer.createTransport({

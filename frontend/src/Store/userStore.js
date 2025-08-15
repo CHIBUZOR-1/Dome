@@ -28,5 +28,3 @@ export const userSnip = create(persist(
         }) // only persist the needed field
     }
 ))
-
-export default userSnip;

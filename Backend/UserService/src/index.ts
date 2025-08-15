@@ -7,7 +7,7 @@ import userRouter from './userRoutes';
 import path from 'path';
 import { connectRabbitMQ } from '@shared/rabbitmq';
 
-dotenv.config({ path: path.resolve(__dirname, '../.env') });
+dotenv.config({ path: path.resolve(process.cwd(), 'UserService/.env') });
 
 const app: Application = express();
 
@@ -25,7 +25,7 @@ connectRabbitMQ(process.env.RMQ1!)
     console.error("RabbitMQ connection failed", err);
   });
 
-const PORT = process.env.HOSTPORT1;
+const PORT = process.env.HOSTPORT1 || 5100;
 // Start server only if DB is connected
 app.use('/u', userRouter);
 (async () => {

@@ -58,6 +58,7 @@ const register = async (req: Request, res: Response) => {
       "user.created",      // routing key
       Buffer.from(JSON.stringify({ userId: newUser._id.toString() }))
     );
+    console.log('pp')
     await sendVerificationEmail(newUser.email, verificationToken, newUser.name);
 
     res.status(201).json({
@@ -141,8 +142,7 @@ const verifyEmail = async(req: Request, res: Response) => {
 
 		res.status(200).json({
 			ok: true,
-			msg: "Email verified successfully",
-			user
+			msg: "Email verified successfully"
 		});
   } catch (error) {
     res.status(500).json({ ok: false, msg: "Server error" });

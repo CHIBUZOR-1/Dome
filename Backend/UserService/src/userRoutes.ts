@@ -6,8 +6,8 @@ import { forgotPassword, googleAuth, login, logout, register, resetPassword, ver
 import { deleteUser, getAllUsers, updateProfile, updateUserRole } from './Controllers/userController';
 
 
-userRouter.post('/sign-up', register);
-userRouter.post('/sign-in', login);
+userRouter.post('/register', register);
+userRouter.post('/login', login);
 userRouter.post('/verify-email', verifyEmail);
 userRouter.post('/forgot-password', forgotPassword);
 userRouter.post('/reset-password/:token', resetPassword);

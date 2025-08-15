@@ -1,3 +1,4 @@
+// Backend/SharedUtilz/emails.ts
 import {
   VERIFICATION_EMAIL_TEMPLATE,
   VERIFIED_ACCOUNT_TEMPLATE,
@@ -10,7 +11,7 @@ import { sender, transporter } from './nodemailer.config';
 const sendVerificationEmail = async (email: string, verificationToken: string, name: string) => {
 	try {
 		const info = await transporter.sendMail({
-            from: `"Trix" <${sender}>`,
+            from: `"Dome" <${sender}>`,
             to: email,
             subject: "Verify your email",
             html: VERIFICATION_EMAIL_TEMPLATE.replace("{verificationCode}", verificationToken).replace("{username}", name.split(" ")[0]),
@@ -27,7 +28,7 @@ const sendVerificationEmail = async (email: string, verificationToken: string, n
 const sendVerifiedEmail = async (email: string, name: string) => {
 	try {
 		const info = await transporter.sendMail({
-            from: `"Trix" <${sender}>`,
+            from: `"Dome" <${sender}>`,
             to: email,
             subject: "Email Verified",
             html: VERIFIED_ACCOUNT_TEMPLATE.replace("{username}", name.split(" ")[0]),
@@ -44,7 +45,7 @@ const sendVerifiedEmail = async (email: string, name: string) => {
 const sendPasswordResetEmail = async (email: string, name: string, url: string) => {
 	try {
 		const info = await transporter.sendMail({
-            from: `"Trix" <${sender}>`,
+            from: `"Dome" <${sender}>`,
             to: email,
             subject: "Password Reset Link",
             html: PASSWORD_RESET_REQUEST_TEMPLATE.replace("{resetURL}", url).replace("{username}", name.split(" ")[0]),
@@ -61,7 +62,7 @@ const sendPasswordResetEmail = async (email: string, name: string, url: string) 
 const sendResetSuccessEmail = async (email: string, name: string) => {
 	try {
 		const info = await transporter.sendMail({
-            from: `"Trix" <${sender}>`,
+            from: `"Dome" <${sender}>`,
             to: email,
             subject: "Password Reset Successful",
             html: PASSWORD_RESET_SUCCESS_TEMPLATE.replace("{username}", name.split(" ")[0]),

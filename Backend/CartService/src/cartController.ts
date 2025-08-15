@@ -7,6 +7,12 @@ const addToCart = async(req: AuthRequest, res: Response) => {
     try {
         const { itemId } = req.body
         const uId = (req.user as JwtPayload)?.userId;
+        if (!uId) {
+            return res.status(401).json({ ok: false, msg: "Unauthorized" });
+        }
+        if (!itemId || typeof itemId !== "string") {
+            return res.status(400).json({ ok: false, msg: "Invalid item ID" });
+        }
         await cartModel.updateOne(
             { userId: uId },
             { $inc: { [`items.${itemId}`]: 1 } },
@@ -28,10 +34,20 @@ const removeFromCart = async(req: AuthRequest, res: Response)=> {
     try {
         const { itemId } = req.body;
         const uId = (req.user as JwtPayload)?.userId;
-        await cartModel.updateOne(
+        if (!uId) {
+            return res.status(401).json({ ok: false, msg: "Unauthorized" });
+        }
+        if (!itemId || typeof itemId !== "string") {
+            return res.status(400).json({ ok: false, msg: "Invalid item ID" });
+        }
+        const cart = await cartModel.findOneAndUpdate(
             { userId: uId, [`items.${itemId}`]: { $gt: 0 } },
-            { $inc: { [`items.${itemId}`]: -1 } }
+            { $inc: { [`items.${itemId}`]: -1 } },
+            { new: true}
         );
+        if (cart?.items?.[itemId] === 0) {
+            await cartModel.updateOne({ userId: uId }, { $unset: { [`items.${itemId}`]: "" } });
+        }
         return res.status(200).json({
             ok: true,
             msg: "Removed from cart"
@@ -47,6 +63,9 @@ const removeFromCart = async(req: AuthRequest, res: Response)=> {
 const getCartItems = async(req: AuthRequest, res: Response)=> {
     try {
         const uId = (req.user as JwtPayload)?.userId;
+        if (!uId) {
+            return res.status(401).json({ ok: false, msg: "Unauthorized" });
+        }
         const cart = await cartModel.findOne({ userId: uId}).lean();
         return res.status(200).json({
             ok: true,
@@ -59,3 +78,5 @@ const getCartItems = async(req: AuthRequest, res: Response)=> {
         })
     }
 }
+
+export { addToCart, removeFromCart, getCartItems };

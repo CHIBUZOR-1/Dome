@@ -1,7 +1,9 @@
+// Backend/UserService/src/Controllers/userController.ts
 import { Request, Response } from "express";
 import UserModel from "../Model/userModel";
 import { AuthRequest } from "@shared/Tokens";
 import { JwtPayload } from "jsonwebtoken";
+import { getChannel } from "@shared/rabbitmq";
 
 const updateProfile = async(req: AuthRequest, res: Response) => {
     try {
@@ -51,7 +53,35 @@ const updateUserRole = async(req: Request, res: Response) => {
 }
 
 const deleteUser = async(req: Request, res: Response)=> {
-
+    try {
+        const { id } = req.params;
+        const user = await UserModel.findByIdAndDelete(id);
+        if(user) {
+            // Publish RabbitMQ event
+            const channel = getChannel();
+            channel.publish(
+                "user_exchange",    // exchange name
+                "user.deleted",     // routing key
+                Buffer.from(JSON.stringify({ userId: id }))
+            );
+          res.json({
+            ok: true,
+            error: false,
+            msg: "deleted Successfully",
+          });  
+        } else {
+            res.json({
+              ok: true,
+              error: false,
+              msg: "delete Usuccessful"
+            });
+        }
+    } catch (error) {
+        res.json({
+            ok:false,
+            msg: "Error occured"
+        })
+    }
 }
 
 const getAllUsers = async(req: Request, res: Response)=> {

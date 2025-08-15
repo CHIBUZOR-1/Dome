@@ -1,0 +1,86 @@
+http:
+  port: 8080
+admin:
+  port: 9876
+  host: localhost
+apiEndpoints:
+  users:
+    host: localhost
+    paths: '/api/users/*'
+  cart:
+    host: localhost
+    paths: '/api/cart/*'
+  products:
+    host: localhost
+    paths: '/api/products/*'
+  reviews:
+    host: localhost
+    paths: '/api/reviews/*'
+  orders:
+    host: localhost
+    paths: '/api/orders/*'
+serviceEndpoints:
+  usersService:
+    url: 'http://localhost:5100'
+  cartService:
+    url: 'http://localhost:5300' # replace with your cart service port
+  productsService:
+    url: 'http://localhost:5200' # replace with your product service port
+  ordersService:
+    url: 'http://localhost:5400' # replace with your order service port
+  reviewsService:
+    url: 'http://localhost:5500' # replace with your review service port
+policies:
+  - cors
+  - log
+  - proxy
+  - rate-limit
+pipelines:
+  usersPipeline:
+    apiEndpoints:
+      - users
+    policies:
+      - proxy:
+          - action:
+              serviceEndpoint: usersService
+              changeOrigin: true
+              stripPath: true
+
+  cartPipeline:
+    apiEndpoints:
+      - cart
+    policies:
+      - proxy:
+          - action:
+              serviceEndpoint: cartService
+              changeOrigin: true
+              stripPath: true
+
+  productsPipeline:
+    apiEndpoints:
+      - products
+    policies:
+      - proxy:
+          - action:
+              serviceEndpoint: productsService
+              changeOrigin: true
+              stripPath: true
+  reviewsPipeline:
+    apiEndpoints:
+      - reviews
+    policies:
+      - proxy:
+          - action:
+              serviceEndpoint: reviewsService
+              changeOrigin: true
+              stripPath: true
+
+  ordersPipeline:
+    apiEndpoints:
+      - orders
+    policies:
+      - proxy:
+          - action:
+              serviceEndpoint: ordersService
+              changeOrigin: true
+              stripPath: true
